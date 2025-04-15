@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Entregas - Sistema de Gestão de Água</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/entregas.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Barra lateral -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <img src="img/LOGO BRANCA.png" alt="Logo Água Delivery" class="logo">
+                <button class="toggle-sidebar" title="Expandir/Retrair Menu">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="clientes.html"><i class="fas fa-users"></i> <span>Clientes</span></a></li>
+                <li class="active"><a href="entregas.html"><i class="fas fa-truck"></i> <span>Entregas</span></a></li>
+                <li><a href="frota.html"><i class="fas fa-truck-monster"></i> <span>Frota</span></a></li>
+                <li><a href="motoristas.html"><i class="fas fa-id-card"></i> <span>Motoristas</span></a></li>
+                <li><a href="despesas.html"><i class="fas fa-file-invoice-dollar"></i> <span>Despesas</span></a></li>
+                <li><a href="relatorios.html"><i class="fas fa-file-pdf"></i> <span>Relatórios</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="configuracoes.html"><i class="fas fa-cog"></i> <span>Configurações</span></a>
+                <a href="#" onclick="encerrarSessao(); return false;"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a>
+            </div>
+        </nav>
+
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>Gestão de Entregas</h1>
+                <div class="user-menu">
+                    <span>Olá, Usuário</span>
+                    <img src="img/user-avatar.png" alt="Avatar" class="avatar">
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Dashboard de Entregas -->
+                <section class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Total de Entregas</h3>
+                                <p id="total-entregas">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Valor Total</h3>
+                                <p id="total-valor">R$ 0,00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-cube"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Volume Total</h3>
+                                <p id="total-metros">0 m³</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Volume Total</h3>
+                                <p id="total-litros">0 L</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Barra de ações -->
+                <section class="actions-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="busca" placeholder="Buscar entregas...">
+                    </div>
+                    <button class="btn btn-primary" id="btn-nova-entrega">
+                        <i class="fas fa-plus"></i> Nova Entrega
+                    </button>
+                </section>
+
+                <!-- Filtros -->
+                <section class="filters-bar">
+                    <div class="filter-group">
+                        <label for="filtro-data">Data</label>
+                        <input type="date" id="filtro-data">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtro-motorista">Motorista</label>
+                        <select id="filtro-motorista">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtro-status">Status</label>
+                        <select id="filtro-status">
+                            <option value="">Todos</option>
+                            <option value="a_emitir">A Emitir</option>
+                            <option value="emitida">Emitida</option>
+                            <option value="pendente">Pendente</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- Tabela de Entregas -->
+                <section class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nota Fiscal</th>
+                                <th>Status NF</th>
+                                <th>Data</th>
+                                <th>Motorista</th>
+                                <th>Origem</th>
+                                <th>Destino</th>
+                                <th>Capacidade</th>
+                                <th>Valor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-entregas">
+                            <!-- Dados serão preenchidos via JavaScript -->
+                        </tbody>
+                    </table>
+
+                    <!-- Estado vazio -->
+                    <div class="empty-state" id="empty-state" style="display: none;">
+                        <i class="fas fa-inbox"></i>
+                        <p>Nenhuma entrega encontrada</p>
+                    </div>
+
+                    <!-- Estado de carregamento -->
+                    <div class="loading-spinner" id="loading-spinner" style="display: none;">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/supabase-api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Criar uma sessão de teste se não existir
+        if (typeof criarSessaoTeste === 'function' && !localStorage.getItem('sessaoUsuario')) {
+            criarSessaoTeste('admin');
+        }
+    </script>
+    <script src="js/entregas.js"></script>
+</body>
+</html> 

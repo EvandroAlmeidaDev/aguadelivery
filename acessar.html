@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Acesso ao Sistema</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+        }
+        .container {
+            text-align: center;
+            max-width: 500px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2196f3;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 15px 20px;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #0d8aee;
+        }
+        .btn-secondary {
+            background-color: #757575;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 5px;
+            text-align: left;
+        }
+    </style>
+    <script src="js/supabase-client.js"></script>
+    <script>
+        function entrarComoAdmin() {
+            criarSessaoTeste('admin');
+            window.location.href = 'entregas.html';
+        }
+        
+        function entrarComoMotorista() {
+            criarSessaoTeste('motorista');
+            window.location.href = 'motorista-app.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="img/LOGO BRANCA.png" alt="Logo" class="logo">
+        <h1>Sistema de Gestão</h1>
+        <p>Selecione como deseja entrar no sistema:</p>
+        
+        <div class="button-container">
+            <button class="btn" onclick="entrarComoAdmin()">Entrar como Administrador</button>
+            <button class="btn btn-secondary" onclick="entrarComoMotorista()">Entrar como Motorista</button>
+        </div>
+        
+        <div class="info">
+            <p><strong>Ambiente:</strong> Desenvolvimento Local</p>
+            <p><strong>Servidor:</strong> Node.js + Express (Porta 8080)</p>
+            <p><strong>Dados:</strong> Simulados (não afeta produção)</p>
+        </div>
+    </div>
+</body>
+</html> 

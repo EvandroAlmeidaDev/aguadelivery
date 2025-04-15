@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>David & Pereira - Acesso ao Sistema</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+        }
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2196f3;
+            margin-bottom: 30px;
+        }
+        .info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn {
+            display: block;
+            padding: 12px 20px;
+            background-color: #2196f3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #0d8aee;
+        }
+        .btn-secondary {
+            background-color: #757575;
+        }
+        .btn-secondary:hover {
+            background-color: #616161;
+        }
+    </style>
+    <!-- Scripts na ordem correta -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script>
+        // Função para criar sessão de teste para desenvolvimento
+        function criarSessaoTeste(role = 'admin') {
+            console.log('Criando sessão de teste...');
+            const sessao = {
+                autenticado: true,
+                dataLogin: new Date().toISOString(),
+                usuario: {
+                    id: '1',
+                    email: 'teste@teste.com',
+                    nome: 'Usuário Teste',
+                    tipo: role
+                }
+            };
+            localStorage.setItem('sessaoUsuario', JSON.stringify(sessao));
+            console.log('Sessão de teste criada com sucesso');
+            
+            // Redirecionar para a página correspondente
+            if (role === 'admin') {
+                window.location.href = 'entregas.html';
+            } else {
+                window.location.href = 'motorista-app.html';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="img/LOGO BRANCA.png" alt="Logo David & Pereira" class="logo">
+        <h1>Sistema de Gestão</h1>
+        
+        <div class="info">
+            <h3>Modo de Desenvolvimento</h3>
+            <p>Este sistema está rodando com o servidor Node.js local. Os dados são simulados e não afetam o ambiente de produção.</p>
+            <p><strong>Servidor:</strong> Express.js na porta 3000</p>
+        </div>
+        
+        <p>Selecione o modo de acesso ao sistema:</p>
+        
+        <div class="button-container">
+            <button class="btn" onclick="criarSessaoTeste('admin')">
+                Entrar como Administrador
+            </button>
+            <button class="btn btn-secondary" onclick="criarSessaoTeste('motorista')">
+                Entrar como Motorista
+            </button>
+            <a href="login.html" class="btn">
+                Ir para Login Normal
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

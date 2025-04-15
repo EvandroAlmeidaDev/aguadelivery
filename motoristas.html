@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Motoristas - Sistema de Gestão de Água</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/motoristas.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Barra lateral -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <img src="img/LOGO BRANCA.png" alt="Logo Água Delivery" class="logo">
+                <button class="toggle-sidebar" title="Expandir/Retrair Menu">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="clientes.html"><i class="fas fa-users"></i> <span>Clientes</span></a></li>
+                <li><a href="entregas.html"><i class="fas fa-truck"></i> <span>Entregas</span></a></li>
+                <li><a href="frota.html"><i class="fas fa-truck-monster"></i> <span>Frota</span></a></li>
+                <li class="active"><a href="motoristas.html"><i class="fas fa-id-card"></i> <span>Motoristas</span></a></li>
+                <li><a href="despesas.html"><i class="fas fa-file-invoice-dollar"></i> <span>Despesas</span></a></li>
+                <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i> <span>Relatórios</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="configuracoes.html"><i class="fas fa-cog"></i> <span>Configurações</span></a>
+                <a href="#" onclick="encerrarSessao(); return false;"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a>
+            </div>
+        </nav>
+
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>Gestão de Motoristas</h1>
+                <div class="user-menu">
+                    <span>Olá, Usuário</span>
+                    <img src="img/user-avatar.png" alt="Avatar" class="avatar">
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Dashboard de Motoristas -->
+                <section class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3>Total de Motoristas</h3>
+                            <p id="total-motoristas">15</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3>Motoristas Disponíveis</h3>
+                            <p id="motoristas-disponiveis">12</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3>Em Rota</h3>
+                            <p id="motoristas-rota">1</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3>CNH a Vencer</h3>
+                            <p id="cnh-vencer">1</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Barra de ações -->
+                <section class="actions-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="busca-motorista" placeholder="Buscar motorista por nome, CPF ou CNH...">
+                    </div>
+                    <button class="btn btn-primary" id="btn-novo-motorista" data-open-modal="modal-motorista">
+                        <i class="fas fa-plus"></i> Novo Motorista
+                    </button>
+                </section>
+
+                <!-- Filtros -->
+                <section class="filters-bar">
+                    <div class="filter-group">
+                        <label for="filtro-disponibilidade">Disponibilidade</label>
+                        <select id="filtro-disponibilidade">
+                            <option value="">Todos</option>
+                            <option value="disponivel">Disponível</option>
+                            <option value="indisponivel">Indisponível</option>
+                            <option value="rota">Em rota</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtro-categoria">Categoria CNH</label>
+                        <select id="filtro-categoria">
+                            <option value="">Todas</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtro-validade">Validade CNH</label>
+                        <select id="filtro-validade">
+                            <option value="">Todas</option>
+                            <option value="aVencer">A vencer (30 dias)</option>
+                            <option value="validas">Válidas</option>
+                            <option value="vencidas">Vencidas</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- Tabela de Motoristas -->
+                <section class="table-container">
+                    <div class="table-wrapper">
+                        <table class="responsive-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-id">ID</th>
+                                    <th class="col-nome">Nome</th>
+                                    <th class="col-doc">CPF</th>
+                                    <th class="col-cnh">CNH</th>
+                                    <th class="col-categoria">Categoria</th>
+                                    <th class="col-validade">Validade</th>
+                                    <th class="col-contato">Contato</th>
+                                    <th class="col-status">Status</th>
+                                    <th class="col-acesso">Acesso</th>
+                                    <th class="col-acoes">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-motoristas">
+                                <!-- Exemplo visual da tabela -->
+                                <tr>
+                                    <td>1</td>
+                                    <td>João Silva</td>
+                                    <td>216.374.330-96</td>
+                                    <td>85220889267</td>
+                                    <td>A</td>
+                                    <td>26/11/2025</td>
+                                    <td>(12) 82765-8448</td>
+                                    <td><span class="status status-disponivel">Disponível</span></td>
+                                    <td><span class="status status-ativo">Ativo</span></td>
+                                    <td class="acoes">
+                                        <button class="btn-acao editar" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-acao excluir" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="btn-acao reset-senha" title="Resetar Senha">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Estado vazio -->
+                    <div class="empty-state" id="empty-state" style="display: none;">
+                        <i class="fas fa-user-slash"></i>
+                        <p>Nenhum motorista encontrado</p>
+                    </div>
+
+                    <!-- Estado de carregamento -->
+                    <div class="loading-spinner" id="loading-spinner" style="display: none;">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Motorista -->
+    <div class="modal" id="modal-motorista">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Novo Motorista</h2>
+                <button class="btn-fechar" id="btn-fechar-modal" data-close-modal>
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-motorista">
+                    <input type="hidden" id="motorista-id">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="motorista-nome">Nome Completo</label>
+                            <input type="text" id="motorista-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="motorista-documento">CPF</label>
+                            <input type="text" id="motorista-documento" required placeholder="000.000.000-00">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="motorista-telefone">Telefone</label>
+                            <input type="text" id="motorista-telefone" required placeholder="(00) 00000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label for="motorista-email">Email</label>
+                            <input type="email" id="motorista-email" placeholder="email@exemplo.com">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="motorista-cnh">Número da CNH</label>
+                            <input type="text" id="motorista-cnh" required placeholder="00000000000">
+                        </div>
+                        <div class="form-group">
+                            <label for="motorista-categoria">Categoria</label>
+                            <select id="motorista-categoria" required>
+                                <option value="">Selecione</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="motorista-data-validade">Data de Validade</label>
+                            <input type="date" id="motorista-data-validade" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group checkbox">
+                        <label>
+                            <input type="checkbox" id="motorista-disponivel" checked>
+                            Motorista disponível para entregas
+                        </label>
+                    </div>
+
+                    <!-- Seção de Dados de Acesso -->
+                    <div class="form-section">
+                        <h3>Dados de Acesso ao Sistema</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="motorista-usuario">Usuário</label>
+                                <input type="text" id="motorista-usuario" placeholder="Nome de usuário ou CPF">
+                                <small>O motorista usará o CPF para login se não for definido um usuário</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="motorista-senha">Senha</label>
+                                <div class="password-container">
+                                    <input type="password" id="motorista-senha" placeholder="Digite a senha">
+                                    <button type="button" class="toggle-password" title="Mostrar/Ocultar Senha">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button type="button" class="generate-password" title="Gerar Senha">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group checkbox">
+                            <label>
+                                <input type="checkbox" id="motorista-ativo" checked>
+                                Usuário ativo no sistema
+                            </label>
+                            <small>Se desativado, o motorista não poderá fazer login no sistema</small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancelar">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/supabase-api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/motoristas.js"></script>
+</body>
+</html> 

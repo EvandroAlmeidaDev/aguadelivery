@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Água Delivery - Relatórios</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/relatorios.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        /* Estilos críticos inline para garantir visibilidade */
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: block;
+        }
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+        #content {
+            flex: 1;
+            display: block;
+            background-color: #f1f5f9;
+            padding: 20px;
+        }
+        .tab-content {
+            display: block;
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar Component -->
+        <div id="sidebar-container"></div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Top Navbar -->
+            <nav class="navbar">
+                <button id="sidebarCollapse" class="navbar-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <span class="navbar-text">
+                    Geração de Relatórios
+                </span>
+                <div class="navbar-right">
+                    <span id="datetime"></span>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <div class="container">
+                <!-- Tabs de Navegação -->
+                <ul class="nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#gerar-relatorio">Gerar Relatório</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#controle-envios">Controle de Envios</a>
+                    </li>
+                </ul>
+
+                <!-- Conteúdo das Abas -->
+                <div class="tab-content">
+                    <!-- Aba de Gerar Relatório -->
+                    <div id="gerar-relatorio" class="tab-pane active">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Geração de Relatório para Cliente</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="relatorio-form">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="empresa">Empresa</label>
+                                            <select id="empresa" class="form-control" required>
+                                                <option value="" selected disabled>Selecione uma empresa</option>
+                                                <!-- Empresas serão carregadas dinamicamente -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="data-inicio">Data Inicial</label>
+                                            <input type="date" class="form-control" id="data-inicio" required>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="data-fim">Data Final</label>
+                                            <input type="date" class="form-control" id="data-fim" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="assunto">Assunto do E-mail</label>
+                                        <input type="text" class="form-control" id="assunto" placeholder="Relatório de Abastecimento - [Período]" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mensagem">Mensagem</label>
+                                        <textarea class="form-control" id="mensagem" rows="3" placeholder="Mensagem que acompanhará o relatório no e-mail"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="enviar-email" checked>
+                                            <label class="form-check-label" for="enviar-email">
+                                                Enviar relatório por e-mail
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn btn-secondary" id="visualizar-relatorio">Visualizar Relatório</button>
+                                        <button type="submit" class="btn btn-primary">Gerar e Enviar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Preview do Relatório -->
+                        <div class="card mt-4" id="preview-container" style="display: none;">
+                            <div class="card-header">
+                                <h5>Prévia do Relatório</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="relatorio-preview" class="p-3 border">
+                                    <!-- Conteúdo da prévia será inserido aqui -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aba de Controle de Envios -->
+                    <div id="controle-envios" class="tab-pane">
+                        <div class="card">
+                            <div class="card-header d-flex justify-between">
+                                <h5>Controle de Envios de Relatórios</h5>
+                                <button id="btn-config-datas" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-cog"></i> Configurar Datas Limite
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="actions-bar mb-3">
+                                    <div class="search-box">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" id="busca-empresa" placeholder="Buscar empresa...">
+                                    </div>
+                                    <div class="filter-status">
+                                        <label for="filtro-status">Status:</label>
+                                        <select id="filtro-status" class="form-control-sm">
+                                            <option value="todos">Todos</option>
+                                            <option value="pendente">Pendentes</option>
+                                            <option value="enviado">Enviados</option>
+                                            <option value="atrasado">Atrasados</option>
+                                            <option value="proximo">Próximos da data limite</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-envios">
+                                        <thead>
+                                            <tr>
+                                                <th>Empresa</th>
+                                                <th>Último Envio</th>
+                                                <th>Próximo Envio</th>
+                                                <th>Prazo</th>
+                                                <th>Status</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabela-controle-envios">
+                                            <!-- Dados serão carregados via JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Estado vazio -->
+                                <div class="empty-state" id="empty-state-envios" style="display: none;">
+                                    <i class="fas fa-inbox"></i>
+                                    <p>Nenhuma empresa encontrada</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configuração de Datas Limite -->
+    <div class="modal" id="modal-config-datas">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Configurar Data Limite</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-config-datas">
+                        <div class="form-group">
+                            <label for="config-empresa">Empresa</label>
+                            <select id="config-empresa" class="form-control" required>
+                                <!-- Empresas serão carregadas dinamicamente -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="config-dia-envio">Dia do mês para envio</label>
+                            <input type="number" class="form-control" id="config-dia-envio" min="1" max="31" required>
+                            <small class="form-text text-muted">Dia do mês em que o relatório deve ser enviado.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="config-dias-aviso">Dias de antecedência para aviso</label>
+                            <input type="number" class="form-control" id="config-dias-aviso" min="1" max="30" value="3" required>
+                            <small class="form-text text-muted">Quantos dias antes mostrar o aviso de proximidade.</small>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="config-ativa" checked>
+                                <label class="form-check-label" for="config-ativa">
+                                    Empresa ativa
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btn-salvar-config">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts principais -->
+    <script src="js/main.js"></script>
+    <script src="js/components.js"></script>
+    <script type="module" src="js/supabase-api.js"></script>
+    
+    <!-- Módulos do sistema de relatórios -->
+    <script src="js/relatorios-core.js"></script>
+    <script src="js/relatorios-pdf.js"></script>
+    <script src="js/relatorios-envios.js"></script>
+    <script src="js/relatorios-ui.js"></script>
+    <script src="js/relatorios.js"></script>
+    
+    <script>
+        // Script de inicialização em linha para garantir visibilidade
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Inicialização direta do HTML");
+            
+            // Garantir que o sidebar seja carregado
+            if (typeof carregarSidebar === 'function') {
+                carregarSidebar();
+            }
+            
+            // Exibir página principal
+            const content = document.getElementById('content');
+            if (content) {
+                content.style.visibility = 'visible';
+                content.style.display = 'block';
+            }
+            
+            // Ativar primeira aba
+            const firstTab = document.querySelector('.tab-pane');
+            if (firstTab) {
+                firstTab.style.display = 'block';
+                firstTab.classList.add('active');
+            }
+            
+            // Verificar se o script relatorios.js foi carregado
+            console.log("Verificando carregamento dos scripts:");
+            console.log(" - relatoriosCore:", typeof window.relatoriosCore !== 'undefined' ? 'OK' : 'NÃO CARREGADO');
+            console.log(" - relatoriosUI:", typeof window.relatoriosUI !== 'undefined' ? 'OK' : 'NÃO CARREGADO');
+            console.log(" - relatoriosEnvios:", typeof window.relatoriosEnvios !== 'undefined' ? 'OK' : 'NÃO CARREGADO');
+            console.log(" - relatoriosPDF:", typeof window.relatoriosPDF !== 'undefined' ? 'OK' : 'NÃO CARREGADO');
+        });
+    </script>
+
+    <!-- Scripts -->
+    <script src="js/components.js"></script>
+    <script src="js/relatorios-core.js"></script>
+    <script src="js/relatorios-pdf.js"></script>
+    <script src="js/relatorios-envios.js"></script>
+    <script src="js/relatorios-ui.js"></script>
+    <script src="js/relatorios.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Corrigir estilos dos badges de status
+            function corrigirEstilosBadges() {
+                // Esperar um pouco para garantir que a tabela foi carregada
+                setTimeout(() => {
+                    // Pegar todos os badges na tabela
+                    const badges = document.querySelectorAll('.table-envios .badge');
+                    
+                    // Para cada badge, aplicar os estilos corretos
+                    badges.forEach(badge => {
+                        // Aplicar estilo base
+                        badge.style.display = 'inline-block';
+                        badge.style.padding = '6px 10px';
+                        badge.style.fontSize = '12px';
+                        badge.style.fontWeight = '600';
+                        badge.style.lineHeight = '1';
+                        badge.style.textAlign = 'center';
+                        badge.style.whiteSpace = 'nowrap';
+                        badge.style.verticalAlign = 'baseline';
+                        badge.style.borderRadius = '20px';
+                        badge.style.textTransform = 'uppercase';
+                        badge.style.minWidth = '80px';
+                        
+                        // Aplicar cores de acordo com o tipo
+                        if (badge.classList.contains('badge-success')) {
+                            badge.style.backgroundColor = '#d4edda';
+                            badge.style.color = '#155724';
+                        } else if (badge.classList.contains('badge-danger')) {
+                            badge.style.backgroundColor = '#f8d7da';
+                            badge.style.color = '#721c24';
+                        } else if (badge.classList.contains('badge-warning')) {
+                            badge.style.backgroundColor = '#fff3cd';
+                            badge.style.color = '#856404';
+                        } else if (badge.classList.contains('badge-info')) {
+                            badge.style.backgroundColor = '#d1ecf1';
+                            badge.style.color = '#0c5460';
+                        }
+                    });
+                    
+                    console.log('Estilos dos badges corrigidos:', badges.length);
+                }, 1000);
+            }
+            
+            // Chamar a função imediatamente
+            corrigirEstilosBadges();
+            
+            // E configurar para quando a aba de controle de envios for clicada
+            document.querySelectorAll('.nav-link').forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    if (e.target.getAttribute('href') === '#controle-envios') {
+                        corrigirEstilosBadges();
+                    }
+                });
+            });
+            
+            // Monitorar mudanças na tabela (para quando novos dados forem carregados)
+            const observer = new MutationObserver(function(mutations) {
+                corrigirEstilosBadges();
+            });
+            
+            const tabelaEnvios = document.getElementById('tabela-controle-envios');
+            if (tabelaEnvios) {
+                observer.observe(tabelaEnvios, { 
+                    childList: true,
+                    subtree: true
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

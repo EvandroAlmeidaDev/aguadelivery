@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Recuperar Senha - Água Delivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2196f3;
+            --secondary-color: #0d47a1;
+            --text-color: #333;
+            --background-color: #f5f7fa;
+            --card-color: #fff;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        .logo {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+        
+        .recovery-container {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+        }
+        
+        .recovery-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+        
+        .recovery-subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: var(--text-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+        }
+        
+        .steps {
+            display: none;
+        }
+        
+        .steps.active {
+            display: block;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .back-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .alert-info {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #bbdefb;
+        }
+        
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .alert-warning {
+            background-color: #fff3e0;
+            color: #ef6c00;
+            border: 1px solid #ffe0b2;
+        }
+        
+        .verification-code {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .verification-code input {
+            width: 45px;
+            height: 55px;
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 0;
+        }
+        
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .progress-container::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 2px;
+            width: 100%;
+            background-color: #ddd;
+            z-index: 0;
+        }
+        
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .progress-step.active {
+            background-color: var(--primary-color);
+        }
+        
+        .progress-step.completed {
+            background-color: var(--success-color);
+        }
+    </style>
+</head>
+<body>
+    <img src="img/LOGO AZUL.png" alt="Água Delivery" class="logo">
+    
+    <div class="recovery-container">
+        <div class="progress-container">
+            <div class="progress-step active" id="step-1">1</div>
+            <div class="progress-step" id="step-2">2</div>
+            <div class="progress-step" id="step-3">3</div>
+        </div>
+        
+        <!-- Etapa 1: Identificação -->
+        <div class="steps active" id="step1">
+            <h1 class="recovery-title">Recuperar Senha</h1>
+            <p class="recovery-subtitle">Informe seu e-mail para iniciar o processo de recuperação</p>
+            
+            <form id="recovery-form-step1">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="Digite seu e-mail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="user-type">Tipo de Usuário</label>
+                    <select id="user-type" required>
+                        <option value="">Selecione</option>
+                        <option value="admin">Administrador</option>
+                        <option value="motorista">Motorista</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Próximo</button>
+            </form>
+            
+            <div class="back-link">
+                <a href="login.html">Voltar para login</a>
+            </div>
+        </div>
+        
+        <!-- Etapa 2: Verificação -->
+        <div class="steps" id="step2">
+            <h1 class="recovery-title">Verificação</h1>
+            <p class="recovery-subtitle">Digite o código de verificação enviado para seu e-mail</p>
+            
+            <div class="alert alert-info">
+                Um código de verificação foi enviado para <strong id="user-email">seu e-mail</strong>. 
+                Por favor, verifique sua caixa de entrada ou pasta de spam.
+            </div>
+            
+            <form id="recovery-form-step2">
+                <div class="verification-code">
+                    <input type="text" maxlength="1" id="code-1" pattern="[0-9]" required>
+                    <input type="text" maxlength="1" id="code-2" pattern="[0-9]" required>
+                    <input type="text" maxlength="1" id="code-3" pattern="[0-9]" required>
+                    <input type="text" maxlength="1" id="code-4" pattern="[0-9]" required>
+                    <input type="text" maxlength="1" id="code-5" pattern="[0-9]" required>
+                    <input type="text" maxlength="1" id="code-6" pattern="[0-9]" required>
+                </div>
+                
+                <button type="submit" class="btn">Verificar</button>
+                <button type="button" class="btn btn-secondary" id="resend-code">Reenviar Código</button>
+            </form>
+            
+            <div class="back-link">
+                <a href="#" id="back-to-step1">Voltar</a>
+            </div>
+        </div>
+        
+        <!-- Etapa 3: Nova Senha -->
+        <div class="steps" id="step3">
+            <h1 class="recovery-title">Nova Senha</h1>
+            <p class="recovery-subtitle">Defina uma nova senha para sua conta</p>
+            
+            <form id="recovery-form-step3">
+                <div class="form-group">
+                    <label for="new-password">Nova Senha</label>
+                    <input type="password" id="new-password" placeholder="Digite sua nova senha" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">Confirmar Senha</label>
+                    <input type="password" id="confirm-password" placeholder="Confirme sua nova senha" required>
+                </div>
+                
+                <button type="submit" class="btn">Redefinir Senha</button>
+            </form>
+            
+            <div class="back-link">
+                <a href="#" id="back-to-step2">Voltar</a>
+            </div>
+        </div>
+        
+        <!-- Etapa 4: Sucesso -->
+        <div class="steps" id="step4">
+            <h1 class="recovery-title">Senha Redefinida!</h1>
+            
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i> Sua senha foi redefinida com sucesso.
+            </div>
+            
+            <p class="recovery-subtitle">Você já pode fazer login com sua nova senha.</p>
+            
+            <a href="login.html" class="btn">Ir para Login</a>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script type="module" src="js/supabase-api.js"></script>
+    <script src="js/recuperar-senha.js"></script>
+</body>
+</html> 

@@ -1,0 +1,43 @@
+/* Notebook/Smaller Desktop Screens */
+@media screen and (min-width: 1025px) and (max-width: 1366px) {
+    .profile-cards {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .profile-card {
+        padding: var(--spacing-md);
+    }
+    
+    .profile-card-content {
+        gap: var(--spacing-md);
+    }
+    
+    .profile-info-section {
+        gap: var(--spacing-md);
+    }
+    
+    .profile-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-sm);
+    }
+    
+    .stat-card {
+        padding: var(--spacing-md);
+    }
+    
+    .stat-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.2rem;
+    }
+    
+    .stat-info h3 {
+        font-size: var(--font-size-sm);
+        margin-bottom: 4px;
+    }
+    
+    .stat-info p {
+        font-size: var(--font-size-lg);
+    }
+} 

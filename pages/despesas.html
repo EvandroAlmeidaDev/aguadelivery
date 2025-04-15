@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Água Delivery - Despesas</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/despesas.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/logo.png" alt="Água Delivery Logo" class="logo">
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="entregas.html"><i class="fas fa-truck"></i> Entregas</a></li>
+            <li><a href="clientes.html"><i class="fas fa-users"></i> Clientes</a></li>
+            <li><a href="motoristas.html"><i class="fas fa-id-card"></i> Motoristas</a></li>
+            <li><a href="frota.html"><i class="fas fa-car"></i> Frota</a></li>
+            <li class="active"><a href="despesas.html"><i class="fas fa-receipt"></i> Despesas</a></li>
+        </ul>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1>Despesas</h1>
+            <button class="primary-button" onclick="adicionarDespesa()">
+                <i class="fas fa-plus"></i> Nova Despesa
+            </button>
+        </header>
+
+        <!-- Cards do Dashboard -->
+        <section class="dashboard-cards">
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total de Despesas</h3>
+                    <p id="total-despesas">0</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Valor Total</h3>
+                    <p id="valor-total">R$ 0,00</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Despesas Mensais</h3>
+                    <p id="despesas-mensais">R$ 0,00</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-gas-pump"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Custo Combustível</h3>
+                    <p id="custo-combustivel">R$ 0,00</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Barra de Ações -->
+        <section class="actions-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Buscar despesas...">
+            </div>
+
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label for="data-inicio">De:</label>
+                    <input type="date" id="data-inicio">
+                </div>
+
+                <div class="filter-group">
+                    <label for="data-fim">Até:</label>
+                    <input type="date" id="data-fim">
+                </div>
+
+                <div class="filter-group">
+                    <label for="categoria">Categoria:</label>
+                    <select id="categoria">
+                        <option value="todas">Todas</option>
+                        <option value="combustivel">Combustível</option>
+                        <option value="manutencao">Manutenção</option>
+                        <option value="alimentacao">Alimentação</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabela de Despesas -->
+        <section class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Categoria</th>
+                        <th>Veículo/Motorista</th>
+                        <th>Valor</th>
+                        <th>Comprovante</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="despesas-table">
+                    <!-- Conteúdo da tabela será preenchido via JavaScript -->
+                </tbody>
+            </table>
+
+            <!-- Estado vazio -->
+            <div class="empty-state" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <p>Nenhuma despesa encontrada</p>
+            </div>
+
+            <!-- Loading spinner -->
+            <div class="loading-spinner" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Carregando...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Despesa -->
+    <div id="despesa-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nova Despesa</h2>
+                <button class="close-button">&times;</button>
+            </div>
+            <form id="despesa-form">
+                <div class="form-group">
+                    <label for="despesa-data">Data</label>
+                    <input type="date" id="despesa-data" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="despesa-descricao">Descrição</label>
+                    <input type="text" id="despesa-descricao" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="despesa-categoria">Categoria</label>
+                    <select id="despesa-categoria" required>
+                        <option value="">Selecione uma categoria</option>
+                        <option value="combustivel">Combustível</option>
+                        <option value="manutencao">Manutenção</option>
+                        <option value="alimentacao">Alimentação</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="despesa-valor">Valor</label>
+                    <input type="number" id="despesa-valor" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="despesa-veiculo">Veículo</label>
+                    <select id="despesa-veiculo">
+                        <option value="">Selecione um veículo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="despesa-motorista">Motorista</label>
+                    <select id="despesa-motorista">
+                        <option value="">Selecione um motorista</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="despesa-comprovante">Comprovante</label>
+                    <input type="file" id="despesa-comprovante" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="despesa-observacoes">Observações</label>
+                    <textarea id="despesa-observacoes"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="secondary-button" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="primary-button">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script type="module" src="../js/despesas.js"></script>
+</body>
+</html> 

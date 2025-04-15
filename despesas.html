@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Despesas - Sistema de Gestão de Água</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/despesas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Barra lateral -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <img src="img/LOGO BRANCA.png" alt="Logo Água Delivery" class="logo">
+                <button class="toggle-sidebar" title="Expandir/Retrair Menu">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="clientes.html"><i class="fas fa-users"></i> <span>Clientes</span></a></li>
+                <li><a href="entregas.html"><i class="fas fa-truck"></i> <span>Entregas</span></a></li>
+                <li><a href="frota.html"><i class="fas fa-truck-monster"></i> <span>Frota</span></a></li>
+                <li><a href="motoristas.html"><i class="fas fa-id-card"></i> <span>Motoristas</span></a></li>
+                <li class="active"><a href="despesas.html"><i class="fas fa-file-invoice-dollar"></i> <span>Despesas</span></a></li>
+                <li><a href="relatorios.html"><i class="fas fa-file-pdf"></i> <span>Relatórios</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="configuracoes.html"><i class="fas fa-cog"></i> <span>Configurações</span></a>
+                <a href="logout.html"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a>
+            </div>
+        </nav>
+
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>Gestão de Despesas</h1>
+                <div class="user-menu">
+                    <span>Olá, Usuário</span>
+                    <img src="img/user-avatar.png" alt="Avatar" class="avatar">
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Dashboard de Despesas -->
+                <section class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Total de Despesas</h3>
+                                <p id="total-despesas">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Valor Total</h3>
+                                <p id="total-valor">R$ 0,00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-calendar-week"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Esse Mês</h3>
+                                <p id="total-mes">R$ 0,00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-gas-pump"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Combustível</h3>
+                                <p id="total-combustivel">R$ 0,00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Manutenção</h3>
+                                <p id="total-manutencao">R$ 0,00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Abastecimento de Água</h3>
+                                <p id="total-abastecimento">R$ 0,00</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Barra de ações -->
+                <section class="actions-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="busca" placeholder="Buscar despesas...">
+                    </div>
+                    <button class="btn btn-primary" id="btn-nova-despesa">
+                        <i class="fas fa-plus"></i> Nova Despesa
+                    </button>
+                </section>
+
+                <!-- Filtros -->
+                <section class="filters-bar">
+                    <div class="filter-group">
+                        <label for="filtro-data-inicio">De</label>
+                        <input type="date" id="filtro-data-inicio">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtro-data-fim">Até</label>
+                        <input type="date" id="filtro-data-fim">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtro-categoria">Categoria</label>
+                        <select id="filtro-categoria">
+                            <option value="">Todas</option>
+                            <option value="combustivel">Combustível</option>
+                            <option value="manutencao">Manutenção</option>
+                            <option value="abastecimento">Abastecimento de Água</option>
+                            <option value="administrativo">Administrativo</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtro-veiculo">Veículo</label>
+                        <select id="filtro-veiculo">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- Tabela de Despesas -->
+                <section class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Veículo/Motorista</th>
+                                <th>Valor</th>
+                                <th>Comprovante</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-despesas">
+                            <!-- Dados serão preenchidos via JavaScript -->
+                        </tbody>
+                    </table>
+
+                    <!-- Estado vazio -->
+                    <div class="empty-state" id="empty-state" style="display: none;">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <p>Nenhuma despesa encontrada</p>
+                    </div>
+
+                    <!-- Estado de carregamento -->
+                    <div class="loading-spinner" id="loading-spinner" style="display: none;">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Nova Despesa -->
+    <div class="modal" id="modal-despesa">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Nova Despesa</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-despesa">
+                    <input type="hidden" id="despesa-id">
+                    
+                    <div class="form-group">
+                        <label for="despesa-data">Data</label>
+                        <input type="date" id="despesa-data" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="despesa-categoria">Categoria</label>
+                        <select id="despesa-categoria" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="combustivel">Combustível</option>
+                            <option value="manutencao">Manutenção</option>
+                            <option value="abastecimento">Abastecimento de Água</option>
+                            <option value="administrativo">Administrativo</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="despesa-descricao">Descrição</label>
+                        <input type="text" id="despesa-descricao" placeholder="Descreva a despesa" required>
+                    </div>
+                    
+                    <div class="form-group" id="grupo-veiculo">
+                        <label for="despesa-veiculo">Veículo</label>
+                        <select id="despesa-veiculo">
+                            <option value="">Selecione um veículo (opcional)</option>
+                            <!-- Opções serão preenchidas via JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="grupo-motorista">
+                        <label for="despesa-motorista">Motorista</label>
+                        <select id="despesa-motorista">
+                            <option value="">Selecione um motorista (opcional)</option>
+                            <!-- Opções serão preenchidas via JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="despesa-valor">Valor (R$)</label>
+                        <input type="number" id="despesa-valor" min="0.01" step="0.01" placeholder="0.00" required>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="despesa-comprovante">Comprovante</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="despesa-comprovante" accept="image/*,application/pdf">
+                            <label for="despesa-comprovante" class="file-upload-label">
+                                <i class="fas fa-upload"></i> Selecionar arquivo
+                            </label>
+                            <span class="file-name" id="file-name-display">Nenhum arquivo selecionado</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="despesa-observacoes">Observações</label>
+                        <textarea id="despesa-observacoes" rows="3" placeholder="Observações adicionais"></textarea>
+                    </div>
+                    
+                    <div class="comprovante-preview-container" id="comprovante-preview-container" style="display: none;">
+                        <h4>Comprovante:</h4>
+                        <div id="comprovante-preview" class="comprovante-preview"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancelar">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="btn-salvar">
+                            <i class="fas fa-save"></i> Salvar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/supabase-api.js" type="module"></script>
+    <script src="js/despesas.js" type="module"></script>
+    <script>
+        // Script para verificar o arquivo despesas.js e corrigir os ícones
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se os elementos existem
+            const cardIcons = document.querySelectorAll('.card-icon');
+            if (cardIcons.length > 0) {
+                console.log('Encontrados', cardIcons.length, 'ícones de cards.');
+                
+                // Aplicar estilos diretamente para garantir a exibição correta
+                const cards = document.querySelectorAll('.card');
+                
+                // Definir um array de cores para cada card
+                const cores = [
+                    '#007bff', // primary (azul) - Total de Despesas
+                    '#28a745', // success (verde) - Valor Total
+                    '#ffc107', // warning (amarelo) - Esse Mês
+                    '#dc3545', // danger (vermelho) - Combustível
+                    '#6610f2', // purple - Manutenção
+                    '#17a2b8'  // info (azul claro) - Abastecimento de Água
+                ];
+                
+                // Aplicar as cores aos cards
+                cards.forEach((card, index) => {
+                    if (index < cores.length) {
+                        card.querySelector('.card-icon').style.backgroundColor = cores[index];
+                    }
+                });
+                
+                // Garantir que os ícones tenham a cor branca
+                cardIcons.forEach(icon => {
+                    icon.style.color = 'white';
+                });
+            } else {
+                console.error('Nenhum ícone de card encontrado!');
+            }
+            
+            // Verificar se o botão Nova Despesa está funcionando
+            const btnNovaDespesa = document.getElementById('btn-nova-despesa');
+            const modal = document.getElementById('modal-despesa');
+            
+            if (btnNovaDespesa && modal) {
+                console.log('Botão Nova Despesa e Modal encontrados.');
+                
+                // Garantir que o botão tem um evento de clique
+                btnNovaDespesa.addEventListener('click', function() {
+                    console.log('Clique no botão Nova Despesa');
+                    modal.style.display = 'block';
+                    
+                    // Adicionar a classe para animar a entrada
+                    setTimeout(() => {
+                        modal.classList.add('active');
+                    }, 10);
+                });
+                
+                // Adicionar evento para o botão de fechar
+                const closeBtn = document.querySelector('.close-modal');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function() {
+                        // Remover a classe active para iniciar a animação de saída
+                        modal.classList.remove('active');
+                        
+                        // Aguardar a animação terminar
+                        setTimeout(() => {
+                            modal.style.display = 'none';
+                        }, 300);
+                    });
+                }
+                
+                // Fechar o modal quando clicar fora dele
+                window.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        // Remover a classe active para iniciar a animação de saída
+                        modal.classList.remove('active');
+                        
+                        // Aguardar a animação terminar
+                        setTimeout(() => {
+                            modal.style.display = 'none';
+                        }, 300);
+                    }
+                });
+                
+                // Garantir que o botão Cancelar também fecha o modal
+                const btnCancelar = document.getElementById('btn-cancelar');
+                if (btnCancelar) {
+                    btnCancelar.addEventListener('click', function() {
+                        // Remover a classe active para iniciar a animação de saída
+                        modal.classList.remove('active');
+                        
+                        // Aguardar a animação terminar
+                        setTimeout(() => {
+                            modal.style.display = 'none';
+                        }, 300);
+                    });
+                }
+            } else {
+                console.error('Botão Nova Despesa ou Modal não encontrado!');
+            }
+        });
+    </script>
+</body>
+</html> 

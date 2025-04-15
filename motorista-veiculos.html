@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Meus Veículos - Água Delivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2196f3;
+            --secondary-color: #0d47a1;
+            --text-color: #333;
+            --background-color: #f5f7fa;
+            --card-color: #fff;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .app-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .app-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .vehicle-card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .vehicle-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .vehicle-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .vehicle-status {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .vehicle-body {
+            padding: 15px;
+        }
+        
+        .vehicle-info {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            width: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 2px;
+        }
+        
+        .info-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        
+        .history-title {
+            font-size: 1rem;
+            margin: 15px 0 10px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-date {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .history-km {
+            font-weight: 500;
+        }
+        
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: var(--text-color);
+        }
+        
+        .btn-icon {
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .vehicle-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        .empty-text {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #777;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+        
+        .maintenance-alert {
+            background-color: #fff3e0;
+            color: #ef6c00;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .maintenance-icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="app-title">
+                <button class="back-btn" onclick="window.location.href='motorista-app.html'">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                Meus Veículos
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <div class="section-title">Veículo Atual</div>
+            
+            <div id="current-vehicle-container">
+                <!-- Será preenchido via JavaScript -->
+            </div>
+            
+            <div class="section-title">Histórico de Veículos</div>
+            
+            <div id="history-vehicles-container">
+                <!-- Será preenchido via JavaScript -->
+            </div>
+        </main>
+        
+        <nav class="bottom-nav">
+            <a href="motorista-app.html" class="nav-item">
+                <i class="fas fa-home nav-icon"></i>
+                <span>Início</span>
+            </a>
+            <a href="motorista-checkin.html" class="nav-item">
+                <i class="fas fa-clipboard-check nav-icon"></i>
+                <span>Check-in</span>
+            </a>
+            <a href="motorista-veiculos.html" class="nav-item active">
+                <i class="fas fa-truck nav-icon"></i>
+                <span>Veículos</span>
+            </a>
+            <a href="motorista-abastecimento.html" class="nav-item">
+                <i class="fas fa-gas-pump nav-icon"></i>
+                <span>Abastecer</span>
+            </a>
+        </nav>
+    </div>
+    
+    <!-- Template para veículo atual -->
+    <template id="current-vehicle-template">
+        <div class="vehicle-card">
+            <div class="vehicle-header">
+                <div class="vehicle-title">{{placa}} - {{modelo}}</div>
+                <div class="vehicle-status">Em Uso</div>
+            </div>
+            <div class="vehicle-body">
+                <img src="{{imagem}}" alt="{{modelo}}" class="vehicle-image" onerror="this.src='img/vehicle-placeholder.jpg'">
+                
+                <div class="vehicle-info">
+                    <div class="info-item">
+                        <div class="info-label">Placa</div>
+                        <div class="info-value">{{placa}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Modelo</div>
+                        <div class="info-value">{{modelo}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ano</div>
+                        <div class="info-value">{{ano}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Capacidade</div>
+                        <div class="info-value">{{capacidade}} litros</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Quilometragem</div>
+                        <div class="info-value">{{kmAtual}} km</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value">{{status}}</div>
+                    </div>
+                </div>
+                
+                <div class="maintenance-alert" style="{{mostrarAlertaManutencao}}">
+                    <i class="fas fa-exclamation-triangle maintenance-icon"></i>
+                    <div>Manutenção preventiva necessária em breve</div>
+                </div>
+                
+                <div class="history-title">Histórico de Quilometragem</div>
+                <div id="km-history">
+                    <!-- Será preenchido via JavaScript -->
+                </div>
+                
+                <div class="button-row">
+                    <button class="btn btn-secondary" onclick="VeiculosManager.reportIssue()">
+                        <i class="fas fa-flag btn-icon"></i> Relatar Problema
+                    </button>
+                    <button class="btn btn-primary" onclick="VeiculosManager.showMaintenanceInfo()">
+                        <i class="fas fa-wrench btn-icon"></i> Manutenção
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Template para veiculo histórico -->
+    <template id="history-vehicle-template">
+        <div class="vehicle-card">
+            <div class="vehicle-header">
+                <div class="vehicle-title">{{placa}} - {{modelo}}</div>
+                <div class="vehicle-status">Histórico</div>
+            </div>
+            <div class="vehicle-body">
+                <div class="vehicle-info">
+                    <div class="info-item">
+                        <div class="info-label">Placa</div>
+                        <div class="info-value">{{placa}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Modelo</div>
+                        <div class="info-value">{{modelo}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Última Utilização</div>
+                        <div class="info-value">{{ultimaUtilizacao}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">KM Registrado</div>
+                        <div class="info-value">{{kmRegistrado}} km</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Template para estado vazio -->
+    <template id="empty-state-template">
+        <div class="empty-state">
+            <i class="fas fa-truck empty-icon"></i>
+            <p class="empty-text">Você não possui veículos associados no momento.</p>
+            <button class="btn btn-primary" onclick="window.location.href='motorista-checkin.html'">
+                <i class="fas fa-clipboard-check btn-icon"></i> Realizar Check-in
+            </button>
+        </div>
+    </template>
+    
+    <!-- Scripts -->
+    <script type="module" src="js/supabase-api.js"></script>
+    <script src="js/motorista-veiculos.js"></script>
+</body>
+</html> 

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Abastecimentos - Água Delivery</title>
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <style>
+        .card-abastecimento {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header-agua {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .card-header-combustivel {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .foto-comprovante {
+            max-height: 200px;
+            object-fit: contain;
+            cursor: pointer;
+        }
+        
+        .modal-foto img {
+            max-width: 100%;
+        }
+        
+        .filtros {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .sem-registros {
+            padding: 50px;
+            text-align: center;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-light border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading">Água Delivery</div>
+            <div class="list-group list-group-flush">
+                <a href="index.html" class="list-group-item list-group-item-action bg-light">
+                    <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                </a>
+                <a href="entregas.html" class="list-group-item list-group-item-action bg-light">
+                    <i class="fas fa-truck mr-2"></i> Entregas
+                </a>
+                <a href="abastecimento.html" class="list-group-item list-group-item-action bg-light">
+                    <i class="fas fa-gas-pump mr-2"></i> Registrar Abastecimento
+                </a>
+                <a href="abastecimentos.html" class="list-group-item list-group-item-action bg-light active">
+                    <i class="fas fa-list mr-2"></i> Histórico de Abastecimentos
+                </a>
+                <a href="motoristas.html" class="list-group-item list-group-item-action bg-light">
+                    <i class="fas fa-users mr-2"></i> Motoristas
+                </a>
+            </div>
+        </div>
+        
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="btn btn-primary" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="ml-auto dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user mr-2"></i>
+                        <span id="nome-usuario">Usuário</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#" id="logout-btn">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            
+            <div class="container-fluid mt-4">
+                <h1 class="mb-4">Histórico de Abastecimentos</h1>
+                
+                <!-- Filtros -->
+                <div class="filtros">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filtro-tipo">Tipo de Abastecimento</label>
+                                <select id="filtro-tipo" class="form-control">
+                                    <option value="todos">Todos</option>
+                                    <option value="agua">Água</option>
+                                    <option value="combustivel">Combustível</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filtro-veiculo">Veículo</label>
+                                <select id="filtro-veiculo" class="form-control">
+                                    <option value="todos">Todos</option>
+                                    <!-- Opções de veículos serão carregadas via JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filtro-data-inicio">Data Inicial</label>
+                                <input type="date" id="filtro-data-inicio" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="filtro-data-fim">Data Final</label>
+                                <input type="date" id="filtro-data-fim" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button id="aplicar-filtros" class="btn btn-primary">
+                                <i class="fas fa-filter mr-2"></i> Aplicar Filtros
+                            </button>
+                            <button id="limpar-filtros" class="btn btn-secondary ml-2">
+                                <i class="fas fa-undo mr-2"></i> Limpar Filtros
+                            </button>
+                            <button id="exportar-csv" class="btn btn-success float-right">
+                                <i class="fas fa-file-csv mr-2"></i> Exportar para CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumo -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Total de Abastecimentos</h5>
+                                <h2 id="total-abastecimentos">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Total de Água (L)</h5>
+                                <h2 id="total-agua">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Total de Combustível (L)</h5>
+                                <h2 id="total-combustivel">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lista de Abastecimentos -->
+                <div id="lista-abastecimentos">
+                    <!-- Os registros serão carregados via JavaScript -->
+                </div>
+                
+                <!-- Mensagem Sem Registros -->
+                <div id="sem-registros" class="sem-registros" style="display: none;">
+                    <i class="fas fa-search fa-4x mb-3 text-muted"></i>
+                    <h3>Nenhum registro encontrado</h3>
+                    <p class="text-muted">Tente ajustar os filtros ou registre novos abastecimentos.</p>
+                    <a href="abastecimento.html" class="btn btn-primary mt-3">
+                        <i class="fas fa-plus mr-2"></i> Registrar Abastecimento
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Visualizar Foto -->
+    <div class="modal fade" id="modal-foto" tabindex="-1" role="dialog" aria-labelledby="modalFotoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalFotoLabel">Comprovante</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body modal-foto">
+                    <img id="foto-ampliada" src="" alt="Comprovante">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/supabase-api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/abastecimentos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            verificarAutenticacao();
+            
+            // Toggle menu
+            document.getElementById('menu-toggle').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('wrapper').classList.toggle('toggled');
+            });
+            
+            // Configurar logout
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                localStorage.removeItem('sessao');
+                window.location.href = 'login.html';
+            });
+            
+            // Atualizar nome do usuário
+            const sessao = JSON.parse(localStorage.getItem('sessao'));
+            if (sessao && sessao.nome) {
+                document.getElementById('nome-usuario').textContent = sessao.nome;
+            }
+            
+            // Carregar veículos para o filtro
+            carregarVeiculos();
+            
+            // Configurar datas iniciais
+            const hoje = new Date();
+            const primeiroDiaMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+            document.getElementById('filtro-data-inicio').value = primeiroDiaMes.toISOString().split('T')[0];
+            document.getElementById('filtro-data-fim').value = hoje.toISOString().split('T')[0];
+            
+            // Configurar eventos de botões
+            document.getElementById('aplicar-filtros').addEventListener('click', carregarAbastecimentos);
+            document.getElementById('limpar-filtros').addEventListener('click', limparFiltros);
+            document.getElementById('exportar-csv').addEventListener('click', exportarParaCSV);
+            
+            // Carregar abastecimentos iniciais
+            carregarAbastecimentos();
+        });
+        
+        function carregarVeiculos() {
+            try {
+                const veiculos = mockAPI.listarVeiculos();
+                const selectVeiculo = document.getElementById('filtro-veiculo');
+                
+                veiculos.forEach(veiculo => {
+                    const option = document.createElement('option');
+                    option.value = veiculo.id;
+                    option.textContent = `${veiculo.placa} - ${veiculo.modelo}`;
+                    selectVeiculo.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar veículos:', error);
+            }
+        }
+        
+        function carregarAbastecimentos() {
+            // Obter abastecimentos do localStorage
+            const abastecimentos = JSON.parse(localStorage.getItem('abastecimentos') || '[]');
+            
+            // Aplicar filtros
+            const tipo = document.getElementById('filtro-tipo').value;
+            const veiculoId = document.getElementById('filtro-veiculo').value;
+            const dataInicio = document.getElementById('filtro-data-inicio').value;
+            const dataFim = document.getElementById('filtro-data-fim').value;
+            
+            const abastecimentosFiltrados = abastecimentos.filter(abastecimento => {
+                // Filtrar por tipo
+                if (tipo !== 'todos' && abastecimento.tipo !== tipo) {
+                    return false;
+                }
+                
+                // Filtrar por veículo
+                if (veiculoId !== 'todos' && abastecimento.veiculoId !== veiculoId) {
+                    return false;
+                }
+                
+                // Filtrar por data
+                if (dataInicio && abastecimento.data < dataInicio) {
+                    return false;
+                }
+                
+                if (dataFim && abastecimento.data > dataFim) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // Ordenar por data (mais recente primeiro)
+            abastecimentosFiltrados.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            // Atualizar contadores
+            atualizarContadores(abastecimentosFiltrados);
+            
+            // Renderizar lista
+            renderizarLista(abastecimentosFiltrados);
+        }
+        
+        function atualizarContadores(abastecimentos) {
+            document.getElementById('total-abastecimentos').textContent = abastecimentos.length;
+            
+            const totalAgua = abastecimentos
+                .filter(a => a.tipo === 'agua')
+                .reduce((total, a) => total + a.quantidade, 0);
+            
+            const totalCombustivel = abastecimentos
+                .filter(a => a.tipo === 'combustivel')
+                .reduce((total, a) => total + a.quantidade, 0);
+            
+            document.getElementById('total-agua').textContent = totalAgua.toFixed(0);
+            document.getElementById('total-combustivel').textContent = totalCombustivel.toFixed(0);
+        }
+        
+        function renderizarLista(abastecimentos) {
+            const listaElement = document.getElementById('lista-abastecimentos');
+            const semRegistrosElement = document.getElementById('sem-registros');
+            
+            listaElement.innerHTML = '';
+            
+            if (abastecimentos.length === 0) {
+                listaElement.style.display = 'none';
+                semRegistrosElement.style.display = 'block';
+                return;
+            }
+            
+            listaElement.style.display = 'block';
+            semRegistrosElement.style.display = 'none';
+            
+            // Mapeamento de veículos
+            const veiculos = {};
+            mockAPI.listarVeiculos().forEach(v => veiculos[v.id] = v);
+            
+            abastecimentos.forEach(abastecimento => {
+                const veiculo = veiculos[abastecimento.veiculoId] || { placa: 'Desconhecido', modelo: '' };
+                const data = new Date(abastecimento.data).toLocaleDateString('pt-BR');
+                const valorTotal = parseFloat(abastecimento.valorTotal).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card card-abastecimento';
+                
+                cardElement.innerHTML = `
+                    <div class="card-header card-header-${abastecimento.tipo}">
+                        <h5 class="mb-0">
+                            <i class="fas fa-${abastecimento.tipo === 'agua' ? 'tint' : 'gas-pump'} mr-2"></i>
+                            Abastecimento de ${abastecimento.tipo === 'agua' ? 'Água' : 'Combustível'} - ${data}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Veículo:</strong> ${veiculo.placa} - ${veiculo.modelo}</p>
+                                <p><strong>Motorista:</strong> ${abastecimento.nomeMotorista || 'Não informado'}</p>
+                                <p><strong>Fornecedor:</strong> ${abastecimento.fornecedor}</p>
+                                <p><strong>Quantidade:</strong> ${abastecimento.quantidade} litros</p>
+                                <p><strong>Valor Total:</strong> ${valorTotal}</p>
+                                <p><strong>Forma de Pagamento:</strong> ${abastecimento.formaPagamento}</p>
+                            </div>
+                            <div class="col-md-6">
+                                ${abastecimento.foto ? 
+                                    `<img src="${abastecimento.foto}" class="foto-comprovante" alt="Comprovante" onclick="ampliarFoto('${abastecimento.foto}')">` : 
+                                    '<p class="text-muted">Sem comprovante</p>'}
+                                ${abastecimento.observacoes ? 
+                                    `<p class="mt-3"><strong>Observações:</strong> ${abastecimento.observacoes}</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                listaElement.appendChild(cardElement);
+            });
+        }
+        
+        function limparFiltros() {
+            document.getElementById('filtro-tipo').value = 'todos';
+            document.getElementById('filtro-veiculo').value = 'todos';
+            
+            const hoje = new Date();
+            const primeiroDiaMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+            document.getElementById('filtro-data-inicio').value = primeiroDiaMes.toISOString().split('T')[0];
+            document.getElementById('filtro-data-fim').value = hoje.toISOString().split('T')[0];
+            
+            carregarAbastecimentos();
+        }
+        
+        function ampliarFoto(src) {
+            document.getElementById('foto-ampliada').src = src;
+            $('#modal-foto').modal('show');
+        }
+        
+        function exportarParaCSV() {
+            // Obter abastecimentos filtrados
+            const abastecimentos = JSON.parse(localStorage.getItem('abastecimentos') || '[]');
+            
+            // Aplicar filtros
+            const tipo = document.getElementById('filtro-tipo').value;
+            const veiculoId = document.getElementById('filtro-veiculo').value;
+            const dataInicio = document.getElementById('filtro-data-inicio').value;
+            const dataFim = document.getElementById('filtro-data-fim').value;
+            
+            const abastecimentosFiltrados = abastecimentos.filter(abastecimento => {
+                // Filtrar por tipo
+                if (tipo !== 'todos' && abastecimento.tipo !== tipo) {
+                    return false;
+                }
+                
+                // Filtrar por veículo
+                if (veiculoId !== 'todos' && abastecimento.veiculoId !== veiculoId) {
+                    return false;
+                }
+                
+                // Filtrar por data
+                if (dataInicio && abastecimento.data < dataInicio) {
+                    return false;
+                }
+                
+                if (dataFim && abastecimento.data > dataFim) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // Ordenar por data
+            abastecimentosFiltrados.sort((a, b) => new Date(a.data) - new Date(b.data));
+            
+            // Obter veículos
+            const veiculos = {};
+            mockAPI.listarVeiculos().forEach(v => veiculos[v.id] = v);
+            
+            // Cabeçalho do CSV
+            let csv = 'Data,Tipo,Veiculo,Motorista,Fornecedor,Quantidade,Valor Unitário,Valor Total,Forma Pagamento,Observações\n';
+            
+            // Adicionar linhas
+            abastecimentosFiltrados.forEach(a => {
+                const veiculo = veiculos[a.veiculoId] || { placa: 'Desconhecido', modelo: '' };
+                
+                // Escapar campos para evitar problemas com vírgulas
+                const observacoes = a.observacoes ? `"${a.observacoes.replace(/"/g, '""')}"` : '';
+                
+                csv += `${a.data},`;
+                csv += `${a.tipo === 'agua' ? 'Água' : 'Combustível'},`;
+                csv += `"${veiculo.placa} - ${veiculo.modelo}",`;
+                csv += `"${a.nomeMotorista || 'Não informado'}",`;
+                csv += `"${a.fornecedor}",`;
+                csv += `${a.quantidade},`;
+                csv += `${a.valorLitro},`;
+                csv += `${a.valorTotal},`;
+                csv += `"${a.formaPagamento}",`;
+                csv += `${observacoes}\n`;
+            });
+            
+            // Criar link para download
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'abastecimentos.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html> 

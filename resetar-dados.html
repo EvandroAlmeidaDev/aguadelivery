@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Resetar Dados - David & Pereira</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2196f3;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        button {
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0d47a1;
+        }
+        .success, .error {
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #2196f3;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Resetar Dados do Sistema</h1>
+    
+    <div class="card">
+        <h2>Dados de Motoristas</h2>
+        <p>Esta ação irá redefinir todos os dados de motoristas para os valores iniciais, incluindo o motorista com CPF 216.374.330-96 e senha 'motorista123'.</p>
+        <button id="resetarMotoristas">Resetar Dados de Motoristas</button>
+        <div id="msgMotoristas" class="success"></div>
+    </div>
+    
+    <div class="card">
+        <h2>Todos os Dados</h2>
+        <p>Esta ação irá redefinir TODOS os dados do sistema para os valores iniciais. Isto inclui entregas, motoristas, veículos, etc.</p>
+        <button id="resetarTodos">Resetar Todos os Dados</button>
+        <div id="msgTodos" class="success"></div>
+    </div>
+    
+    <a href="login.html">Voltar para a página de login</a>
+    
+    <!-- Scripts -->
+    <script type="module" src="js/supabase-api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnResetarMotoristas = document.getElementById('resetarMotoristas');
+            const btnResetarTodos = document.getElementById('resetarTodos');
+            const msgMotoristas = document.getElementById('msgMotoristas');
+            const msgTodos = document.getElementById('msgTodos');
+            
+            btnResetarMotoristas.addEventListener('click', function() {
+                try {
+                    // Dados iniciais dos motoristas
+                    const dadosIniciais = [
+                        { 
+                            id: 1, 
+                            nome: 'João Silva', 
+                            documento: '216.374.330-96',
+                            telefone: '(11) 98765-4321', 
+                            email: 'joao.silva@exemplo.com',
+                            cnh: '12345678901', 
+                            categoria: 'A',
+                            dataValidade: '2025-11-26',
+                            disponivel: true,
+                            usuario: '',  // Usará CPF como login
+                            senha: 'motorista123',  // Senha atualizada para facilitar login
+                            ativo: true
+                        },
+                        { 
+                            id: 2, 
+                            nome: 'Maria Oliveira', 
+                            documento: '812.453.267-00',
+                            telefone: '(11) 91234-5678', 
+                            email: 'maria.oliveira@exemplo.com',
+                            cnh: '10987654321', 
+                            categoria: 'B',
+                            dataValidade: '2024-05-15',
+                            disponivel: true,
+                            usuario: 'maria.oliveira',
+                            senha: 'senha123',
+                            ativo: true
+                        },
+                        { 
+                            id: 3, 
+                            nome: 'Carlos Santos', 
+                            documento: '523.987.156-22',
+                            telefone: '(11) 99876-5432', 
+                            email: 'carlos.santos@exemplo.com',
+                            cnh: '12345098765', 
+                            categoria: 'D',
+                            dataValidade: '2026-08-10',
+                            disponivel: true,
+                            usuario: '',
+                            senha: 'senha123',
+                            ativo: true
+                        },
+                        { 
+                            id: 4, 
+                            nome: 'Ana Pereira', 
+                            documento: '197.634.852-11',
+                            telefone: '(11) 95678-1234', 
+                            email: 'ana.pereira@exemplo.com',
+                            cnh: '56789012345', 
+                            categoria: 'C',
+                            dataValidade: '2023-12-01',
+                            disponivel: false,
+                            usuario: 'ana.p',
+                            senha: 'senha123',
+                            ativo: false
+                        }
+                    ];
+                    
+                    // Remover todos dados existentes de motoristas
+                    localStorage.removeItem('aguadelivery_motoristas');
+                    
+                    // Adicionar os dados iniciais
+                    localStorage.setItem('aguadelivery_motoristas', JSON.stringify(dadosIniciais));
+                    
+                    // Remover sessão atual se existir
+                    localStorage.removeItem('sessaoUsuario');
+                    localStorage.removeItem('sessao');
+                    
+                    // Mostrar mensagem de sucesso
+                    msgMotoristas.textContent = 'Dados de motoristas redefinidos com sucesso! A página será recarregada...';
+                    msgMotoristas.style.display = 'block';
+                    
+                    // Recarregar a página após um breve delay para garantir que os dados sejam recarregados
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } catch (error) {
+                    console.error('Erro ao resetar dados:', error);
+                    msgMotoristas.textContent = 'Erro ao resetar dados: ' + error.message;
+                    msgMotoristas.className = 'error';
+                    msgMotoristas.style.display = 'block';
+                }
+            });
+            
+            btnResetarTodos.addEventListener('click', function() {
+                try {
+                    // Remove todos os dados do localStorage
+                    localStorage.removeItem('aguadelivery_entregas');
+                    localStorage.removeItem('aguadelivery_motoristas');
+                    localStorage.removeItem('aguadelivery_clientes');
+                    localStorage.removeItem('aguadelivery_frota');
+                    localStorage.removeItem('aguadelivery_despesas');
+                    localStorage.removeItem('sessaoUsuario');
+                    localStorage.removeItem('sessao');
+                    localStorage.removeItem('abastecimentos');
+                    
+                    // Recarregar a página para inicializar novos dados
+                    msgTodos.textContent = 'Todos os dados foram redefinidos com sucesso! A página será recarregada...';
+                    msgTodos.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } catch (error) {
+                    console.error('Erro ao resetar todos os dados:', error);
+                    msgTodos.textContent = 'Erro ao resetar dados: ' + error.message;
+                    msgTodos.className = 'error';
+                    msgTodos.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

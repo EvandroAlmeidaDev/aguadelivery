@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Entregas de Água</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #0099ff;
+            --accent-color: #e6f2ff;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --warning-color: #ffc107;
+        }
+        
+        body, html {
+            height: 100%;
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin: 0 auto;
+            margin-top: 5rem;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-header img {
+            max-width: 150px;
+            margin-bottom: 1rem;
+        }
+        
+        .login-body {
+            position: relative;
+        }
+        
+        .login-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .login-tab {
+            padding: 0.75rem 1rem;
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .login-tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-control {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.75rem;
+            width: 100%;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .connection-status {
+            text-align: center;
+            font-size: 0.8rem;
+            padding: 0.5rem;
+            margin-top: 1rem;
+            color: #6c757d;
+        }
+        
+        .loader {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+        }
+        
+        .loader-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .version-info {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <div class="login-header">
+                <img src="img/logo.png" alt="David & Pereira" onerror="this.src='img/logo-placeholder.png'">
+                <h1>Sistema de Gestão</h1>
+                <p>Entre com suas credenciais para acessar</p>
+            </div>
+            
+            <div class="login-body">
+                <div class="login-tabs">
+                    <div class="login-tab active" data-tab="admin">Administrador</div>
+                    <div class="login-tab" data-tab="driver">Motorista</div>
+                </div>
+                
+                <div class="tab-content active" id="tab-admin">
+                    <form id="form-admin">
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="admin-email" placeholder="E-mail" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="admin-password" placeholder="Senha" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Entrar
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="tab-content" id="tab-driver">
+                    <form id="form-driver">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="driver-id" placeholder="ID do Motorista" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="driver-password" placeholder="Senha" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Entrar
+                        </button>
+                    </form>
+                </div>
+                
+                <div id="loader" class="loader">
+                    <div class="loader-spinner"></div>
+                </div>
+                
+                <div id="error-message" class="error-message"></div>
+                
+                <div id="connection-status" class="connection-status">
+                    Verificando conexão...
+                </div>
+            </div>
+            
+            <div class="version-info">
+                Versão 1.0.1 | &copy; 2024 David & Pereira
+            </div>
+        </div>
+    </div>
+    
+    <!-- Primeiro carregamos a biblioteca Supabase via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Script para verificar a conexão com o Supabase -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos UI
+            const tabs = document.querySelectorAll('.login-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const formAdmin = document.getElementById('form-admin');
+            const formDriver = document.getElementById('form-driver');
+            const errorMessage = document.getElementById('error-message');
+            const statusElement = document.getElementById('connection-status');
+            const loader = document.getElementById('loader');
+            
+            // Alternar entre as abas
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remover classe active de todas as abas
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Adicionar classe active à aba clicada
+                    this.classList.add('active');
+                    const tabId = 'tab-' + this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Limpar mensagem de erro ao trocar de aba
+                    errorMessage.style.display = 'none';
+                });
+            });
+            
+            // Handler para o formulário de admin
+            formAdmin.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await processLogin('admin');
+            });
+            
+            // Handler para o formulário de motorista
+            formDriver.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await processLogin('driver');
+            });
+            
+            // Função para processar o login
+            async function processLogin(tipo) {
+                try {
+                    // Mostrar loader
+                    loader.style.display = 'flex';
+                    errorMessage.style.display = 'none';
+                    
+                    // Obter valores dos campos
+                    let usuario, senha;
+                    if (tipo === 'admin') {
+                        usuario = document.getElementById('admin-email').value;
+                        senha = document.getElementById('admin-password').value;
+                    } else {
+                        usuario = document.getElementById('driver-id').value;
+                        senha = document.getElementById('driver-password').value;
+                    }
+                    
+                    // Verificar se o cliente Supabase está disponível
+                    if (typeof window.supabaseClient === 'undefined' && typeof window.supabaseInit === 'function') {
+                        window.supabaseInit();
+                    }
+                    
+                    // Chamar função de login
+                    if (typeof fazerLogin === 'function') {
+                        const sessao = await fazerLogin(usuario, senha, tipo);
+                        
+                        // Redirecionar se o login for bem-sucedido
+                        if (sessao && sessao.usuario) {
+                            console.log('Login bem-sucedido como', tipo);
+                            
+                            if (tipo === 'admin') {
+                                window.location.href = 'admin-dashboard.html';
+                            } else {
+                                window.location.href = 'driver-dashboard.html';
+                            }
+                        } else {
+                            throw new Error('Erro ao realizar login');
+                        }
+                    } else {
+                        throw new Error('Função de login não está disponível');
+                    }
+                } catch (erro) {
+                    console.error('Erro no processo de login:', erro);
+                    
+                    // Exibir mensagem de erro
+                    errorMessage.textContent = erro.message || 'Usuário ou senha incorreta';
+                    errorMessage.style.display = 'block';
+                } finally {
+                    // Esconder loader
+                    loader.style.display = 'none';
+                }
+            }
+            
+            // Verificar conexão com Supabase ao carregar a página
+            checkConnectionStatus();
+            
+            // Função para verificar status da conexão
+            async function checkConnectionStatus() {
+                const statusElement = document.getElementById('connection-status');
+                statusElement.textContent = 'Verificando conexão...';
+                statusElement.style.color = '#6c757d';
+                
+                try {
+                    // Verificar se o testSupabaseConnection está disponível
+                    if (typeof window.testSupabaseConnection === 'function') {
+                        const result = await window.testSupabaseConnection();
+                        
+                        if (result.success) {
+                            statusElement.textContent = 'Conexão estabelecida';
+                            statusElement.style.color = 'var(--success-color)';
+                        } else {
+                            throw new Error(result.message);
+                        }
+                    } else {
+                        // Fallback para verificação direta
+                        if (typeof window.supabaseClient !== 'undefined') {
+                            const { data, error } = await window.supabaseClient
+                                .from('profiles')
+                                .select('count', { count: 'exact', head: true });
+                            
+                            if (error) {
+                                throw error;
+                            }
+                            
+                            statusElement.textContent = 'Conexão estabelecida';
+                            statusElement.style.color = 'var(--success-color)';
+                        } else {
+                            throw new Error('Cliente Supabase não inicializado');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao testar conexão com Supabase:', error);
+                    
+                    // Verificar se estamos em ambiente de desenvolvimento
+                    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                        statusElement.textContent = 'Modo de desenvolvimento ativo (sem conexão)';
+                        statusElement.style.color = 'var(--warning-color)';
+                    } else {
+                        statusElement.textContent = 'Erro de conexão: ' + (error.message || 'Verifique sua conexão');
+                        statusElement.style.color = 'var(--error-color)';
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <!-- Agora carregamos os scripts da aplicação na ordem correta -->
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html> 

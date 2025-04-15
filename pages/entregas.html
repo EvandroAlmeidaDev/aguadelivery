@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Água Delivery - Entregas</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="page" id="entregas">
+        <header class="page-header">
+            <h1>Gestão de Entregas</h1>
+        </header>
+
+        <div class="content">
+            <div class="actions-bar">
+                <div class="search-box">
+                    <input type="text" id="search-deliveries" placeholder="Buscar por endereço...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button id="new-delivery" class="btn primary">
+                    <i class="fas fa-plus"></i>
+                    Nova Entrega
+                </button>
+            </div>
+
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label for="filter-date">Data</label>
+                    <input type="date" id="filter-date">
+                </div>
+                <div class="filter-group">
+                    <label for="filter-driver">Motorista</label>
+                    <select id="filter-driver">
+                        <option value="">Todos</option>
+                        <option value="HERBERT">Herbert</option>
+                        <option value="DENYS">Denys</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-status">Status</label>
+                    <select id="filter-status">
+                        <option value="">Todos</option>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Em Andamento">Em Andamento</option>
+                        <option value="Concluído">Concluído</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                </div>
+                <button id="clear-filters" class="btn secondary">
+                    <i class="fas fa-filter-circle-xmark"></i>
+                    Limpar Filtros
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Motorista</th>
+                            <th>Origem</th>
+                            <th>Destino</th>
+                            <th>Capacidade</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Preenchido via JavaScript -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">Total</td>
+                            <td class="total-capacity">0 L</td>
+                            <td class="total-value">R$ 0,00</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+</body>
+</html> 

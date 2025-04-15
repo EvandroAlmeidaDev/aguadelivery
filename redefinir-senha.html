@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Redefinir Senha - David & Pereira</title>
+    <style>
+        :root {
+            --primary-color: #2196f3;
+            --secondary-color: #0d47a1;
+            --text-color: #333;
+            --error-color: #e53935;
+            --success-color: #43a047;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .reset-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 30px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo-login {
+            height: 80px;
+            width: auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: var(--text-color);
+            margin-bottom: 24px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 38px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .btn-reset {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-reset:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success {
+            background-color: rgba(67, 160, 71, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .error {
+            background-color: rgba(229, 57, 53, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        .login-link {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="reset-container">
+        <div class="logo-container">
+            <img src="img/LOGO BRANCA.png" alt="Logo David & Pereira" class="logo-login">
+        </div>
+        
+        <h1>Redefinir Senha</h1>
+        
+        <p>Defina uma nova senha para sua conta. Escolha uma senha forte que você não use em outros sites.</p>
+        
+        <form id="reset-form" class="reset-form">
+            <div class="form-group">
+                <label for="nova-senha">Nova Senha</label>
+                <input type="password" id="nova-senha" placeholder="Digite sua nova senha" required>
+                <button type="button" class="toggle-password" id="toggle-password-1">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmar-senha">Confirmar Senha</label>
+                <input type="password" id="confirmar-senha" placeholder="Confirme sua nova senha" required>
+                <button type="button" class="toggle-password" id="toggle-password-2">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            
+            <button type="submit" class="btn-reset">Redefinir Senha</button>
+        </form>
+        
+        <div class="message success" id="success-message">
+            Senha redefinida com sucesso! Você já pode fazer login com sua nova senha.
+        </div>
+        
+        <div class="message error" id="error-message">
+            Ocorreu um erro ao redefinir sua senha. Verifique se o link é válido ou tente novamente.
+        </div>
+        
+        <div class="login-link">
+            <a href="login.html">Voltar para o login</a>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar cliente Supabase
+            const SUPABASE_URL = 'https://sua-url-do-supabase.supabase.co';
+            const SUPABASE_KEY = 'sua-chave-anon-publica-do-supabase';
+            const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            
+            // Elementos do formulário
+            const resetForm = document.getElementById('reset-form');
+            const novaSenhaInput = document.getElementById('nova-senha');
+            const confirmarSenhaInput = document.getElementById('confirmar-senha');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            const togglePassword1 = document.getElementById('toggle-password-1');
+            const togglePassword2 = document.getElementById('toggle-password-2');
+            
+            // Função para mostrar/ocultar senha
+            function setupTogglePassword(toggleBtn, inputField) {
+                if (!toggleBtn || !inputField) return;
+                
+                toggleBtn.addEventListener('click', function() {
+                    const tipo = inputField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    inputField.setAttribute('type', tipo);
+                    
+                    const icon = toggleBtn.querySelector('i');
+                    if (tipo === 'text') {
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            }
+            
+            // Configurar botões de toggle de senha
+            setupTogglePassword(togglePassword1, novaSenhaInput);
+            setupTogglePassword(togglePassword2, confirmarSenhaInput);
+            
+            // Submissão do formulário
+            if (resetForm) {
+                resetForm.addEventListener('submit', async function(event) {
+                    event.preventDefault();
+                    
+                    // Ocultar mensagens anteriores
+                    successMessage.style.display = 'none';
+                    errorMessage.style.display = 'none';
+                    
+                    const novaSenha = novaSenhaInput.value;
+                    const confirmarSenha = confirmarSenhaInput.value;
+                    
+                    // Validação básica
+                    if (!novaSenha || !confirmarSenha) {
+                        errorMessage.textContent = 'Por favor, preencha todos os campos.';
+                        errorMessage.style.display = 'block';
+                        return;
+                    }
+                    
+                    if (novaSenha !== confirmarSenha) {
+                        errorMessage.textContent = 'As senhas não coincidem. Tente novamente.';
+                        errorMessage.style.display = 'block';
+                        return;
+                    }
+                    
+                    if (novaSenha.length < 6) {
+                        errorMessage.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+                        errorMessage.style.display = 'block';
+                        return;
+                    }
+                    
+                    // Desabilitar botão durante processamento
+                    const resetButton = document.querySelector('.btn-reset');
+                    resetButton.disabled = true;
+                    resetButton.textContent = 'Processando...';
+                    
+                    try {
+                        // Obter token e email da URL
+                        const url = new URL(window.location.href);
+                        const token = url.searchParams.get('token');
+                        
+                        if (!token) {
+                            throw new Error('Link inválido ou expirado. Solicite um novo link de redefinição.');
+                        }
+                        
+                        // Atualizar senha no Supabase
+                        const { error } = await supabase.auth.updateUser({
+                            password: novaSenha
+                        });
+                        
+                        if (error) throw error;
+                        
+                        // Exibir mensagem de sucesso
+                        successMessage.style.display = 'block';
+                        resetForm.reset();
+                        
+                        // Redirecionar para login após 3 segundos
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 3000);
+                    } catch (error) {
+                        // Exibir mensagem de erro
+                        errorMessage.textContent = error.message || 'Ocorreu um erro ao redefinir sua senha. Tente novamente.';
+                        errorMessage.style.display = 'block';
+                    } finally {
+                        // Reativar botão
+                        resetButton.disabled = false;
+                        resetButton.textContent = 'Redefinir Senha';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

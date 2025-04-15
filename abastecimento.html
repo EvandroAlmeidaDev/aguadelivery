@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Registro de Abastecimento - Água Delivery</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .form-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .form-tab.active {
+            border-bottom: 2px solid #2196f3;
+            color: #2196f3;
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .camera-preview {
+            width: 100%;
+            height: 250px;
+            background: #f0f0f0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .camera-preview img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .location-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Barra lateral -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <img src="img/LOGO BRANCA.png" alt="Logo Água Delivery" class="logo">
+                <button class="toggle-sidebar" title="Expandir/Retrair Menu">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="entregas.html"><i class="fas fa-truck"></i> <span>Entregas</span></a></li>
+                <li class="active"><a href="abastecimento.html"><i class="fas fa-gas-pump"></i> <span>Abastecimento</span></a></li>
+                <li><a href="motoristas.html"><i class="fas fa-id-card"></i> <span>Motoristas</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="configuracoes.html"><i class="fas fa-cog"></i> <span>Configurações</span></a>
+                <a href="#" onclick="encerrarSessao()"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a>
+            </div>
+        </nav>
+
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>Registro de Abastecimento</h1>
+                <div class="user-menu">
+                    <span id="usuario-nome">Olá, Usuário</span>
+                    <img src="img/user-avatar.png" alt="Avatar" class="avatar">
+                </div>
+            </header>
+
+            <div class="page-content">
+                <div class="form-container">
+                    <div class="form-tabs">
+                        <div class="form-tab active" data-tab="agua">Abastecimento de Água</div>
+                        <div class="form-tab" data-tab="combustivel">Abastecimento de Combustível</div>
+                    </div>
+                    
+                    <!-- Formulário de Abastecimento de Água -->
+                    <div id="form-agua" class="tab-content active">
+                        <form id="agua-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="agua-data">Data</label>
+                                    <input type="date" id="agua-data" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="agua-veiculo">Veículo</label>
+                                    <select id="agua-veiculo" required>
+                                        <option value="">Selecione o veículo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="agua-bica">Bica/Fornecedor</label>
+                                    <select id="agua-bica" required>
+                                        <option value="">Selecione a bica</option>
+                                        <option value="bica-municipal">Bica Municipal</option>
+                                        <option value="bica-regional">Bica Regional</option>
+                                        <option value="fornecedor-externo">Fornecedor Externo</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="agua-quantidade">Quantidade (litros)</label>
+                                    <input type="number" id="agua-quantidade" min="0" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="agua-valor">Valor Total (R$)</label>
+                                    <input type="number" id="agua-valor" min="0" step="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="agua-pagamento">Forma de Pagamento</label>
+                                    <select id="agua-pagamento" required>
+                                        <option value="">Selecione</option>
+                                        <option value="dinheiro">Dinheiro</option>
+                                        <option value="cartao">Cartão</option>
+                                        <option value="pix">PIX</option>
+                                        <option value="boleto">Boleto</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="agua-obs">Observações</label>
+                                <textarea id="agua-obs" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Comprovante</label>
+                                <div class="camera-preview" id="agua-preview">
+                                    <i class="fas fa-camera fa-3x"></i>
+                                </div>
+                                <button type="button" class="btn btn-secondary" id="agua-capturar">
+                                    <i class="fas fa-camera"></i> Capturar Foto
+                                </button>
+                            </div>
+                            
+                            <div class="location-info" id="agua-location">
+                                <i class="fas fa-map-marker-alt"></i> Obtendo localização...
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="reset" class="btn btn-secondary">Limpar</button>
+                                <button type="submit" class="btn btn-primary">Registrar Abastecimento</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Formulário de Abastecimento de Combustível -->
+                    <div id="form-combustivel" class="tab-content">
+                        <form id="combustivel-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="combustivel-data">Data</label>
+                                    <input type="date" id="combustivel-data" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="combustivel-veiculo">Veículo</label>
+                                    <select id="combustivel-veiculo" required>
+                                        <option value="">Selecione o veículo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="combustivel-posto">Posto</label>
+                                    <input type="text" id="combustivel-posto" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="combustivel-tipo">Tipo de Combustível</label>
+                                    <select id="combustivel-tipo" required>
+                                        <option value="">Selecione</option>
+                                        <option value="gasolina">Gasolina</option>
+                                        <option value="etanol">Etanol</option>
+                                        <option value="diesel">Diesel</option>
+                                        <option value="gnv">GNV</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="combustivel-litros">Quantidade (litros)</label>
+                                    <input type="number" id="combustivel-litros" min="0" step="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="combustivel-valor-litro">Valor por Litro (R$)</label>
+                                    <input type="number" id="combustivel-valor-litro" min="0" step="0.01" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="combustivel-valor-total">Valor Total (R$)</label>
+                                    <input type="number" id="combustivel-valor-total" min="0" step="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="combustivel-km">Quilometragem Atual</label>
+                                    <input type="number" id="combustivel-km" min="0" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Comprovante</label>
+                                <div class="camera-preview" id="combustivel-preview">
+                                    <i class="fas fa-camera fa-3x"></i>
+                                </div>
+                                <button type="button" class="btn btn-secondary" id="combustivel-capturar">
+                                    <i class="fas fa-camera"></i> Capturar Foto
+                                </button>
+                            </div>
+                            
+                            <div class="location-info" id="combustivel-location">
+                                <i class="fas fa-map-marker-alt"></i> Obtendo localização...
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="reset" class="btn btn-secondary">Limpar</button>
+                                <button type="submit" class="btn btn-primary">Registrar Abastecimento</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/supabase-api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/abastecimento.js"></script>
+</body>
+</html>

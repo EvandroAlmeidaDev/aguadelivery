@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Portal do Motorista - Água Delivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2196f3;
+            --secondary-color: #0d47a1;
+            --text-color: #333;
+            --background-color: #f5f7fa;
+            --card-color: #fff;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        /* Header */
+        .app-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .app-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .app-title img {
+            height: 30px;
+            margin-right: 10px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-name {
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        /* Motorista Info Card */
+        .motorista-info {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .motorista-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .motorista-avatar {
+            background-color: #e0e0e0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: #777;
+        }
+        
+        .motorista-details h2 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .motorista-details p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: white;
+            margin-top: 8px;
+        }
+        
+        .status-disponivel {
+            background-color: var(--success-color);
+        }
+        
+        .status-rota {
+            background-color: var(--warning-color);
+        }
+        
+        .status-indisponivel {
+            background-color: var(--danger-color);
+        }
+        
+        /* Menu de Ações */
+        .action-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .action-card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        
+        .action-card:active {
+            transform: scale(0.98);
+        }
+        
+        .action-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .action-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Entregas do Dia */
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .entrega-list {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .entrega-item {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .entrega-item:last-child {
+            border-bottom: none;
+        }
+        
+        .entrega-info h3 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .entrega-info p {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .entrega-status {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+        }
+        
+        .status-pendente {
+            background-color: var(--warning-color);
+        }
+        
+        .status-entregue {
+            background-color: var(--success-color);
+        }
+        
+        .status-cancelada {
+            background-color: var(--danger-color);
+        }
+        
+        .empty-entregas {
+            padding: 30px;
+            text-align: center;
+            color: #777;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            background-color: var(--card-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #777;
+            font-size: 0.8rem;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="app-title">
+                <img src="img/LOGO BRANCA.png" alt="Logo">
+                <span>Portal do Motorista</span>
+            </div>
+            <div class="user-info">
+                <span class="user-name" id="nome-motorista">Carregando...</span>
+                <button class="logout-btn" onclick="encerrarSessao()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Informações do Motorista -->
+            <section class="motorista-info">
+                <div class="motorista-header">
+                    <div class="motorista-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="motorista-details">
+                        <h2 id="motorista-nome">Carregando...</h2>
+                        <p id="motorista-documento">CPF: ---</p>
+                        <span class="status-badge status-disponivel" id="motorista-status">Disponível</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Menu de Ações -->
+            <section class="action-menu">
+                <div class="action-card" id="action-veiculo">
+                    <div class="action-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <span class="action-title">Meu Veículo</span>
+                </div>
+                <div class="action-card" id="action-abastecimento">
+                    <div class="action-icon">
+                        <i class="fas fa-gas-pump"></i>
+                    </div>
+                    <span class="action-title">Abastecimento</span>
+                </div>
+                <div class="action-card" id="action-checkin">
+                    <div class="action-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <span class="action-title">Check-in</span>
+                </div>
+                <div class="action-card" id="action-nova-entrega">
+                    <div class="action-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <span class="action-title">Nova Entrega</span>
+                </div>
+            </section>
+            
+            <!-- Entregas do Dia -->
+            <section class="entregas-dia">
+                <h2 class="section-title">Entregas do Dia</h2>
+                <div class="entrega-list" id="entrega-list">
+                    <div class="entrega-item">
+                        <div class="entrega-info">
+                            <h3>Mercado Central</h3>
+                            <p>Rua das Flores, 123 - 2 galões de 20L</p>
+                        </div>
+                        <span class="entrega-status status-pendente">Pendente</span>
+                    </div>
+                    <div class="entrega-item">
+                        <div class="entrega-info">
+                            <h3>Padaria São João</h3>
+                            <p>Av. Brasil, 456 - 5 galões de 20L</p>
+                        </div>
+                        <span class="entrega-status status-entregue">Entregue</span>
+                    </div>
+                    <div class="empty-entregas" id="empty-entregas" style="display: none;">
+                        <i class="fas fa-inbox fa-2x"></i>
+                        <p>Nenhuma entrega programada para hoje</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="motorista-app.html" class="nav-item active">
+                <i class="fas fa-home nav-icon"></i>
+                <span>Início</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-route nav-icon"></i>
+                <span>Entregas</span>
+            </a>
+            <a href="motorista-abastecimentos-historico.html" class="nav-item">
+                <i class="fas fa-gas-pump nav-icon"></i>
+                <span>Abastecimento</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-user nav-icon"></i>
+                <span>Perfil</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/supabase-api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Verificar autenticação ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se usuário está autenticado como motorista
+            verificarAutenticacao();
+            
+            // Carregar dados do motorista
+            carregarDadosMotorista();
+            
+            // Carregar entregas do dia
+            carregarEntregasDia();
+        });
+        
+        // Verificar autenticação do motorista
+        function verificarAutenticacao() {
+            const sessaoStr = localStorage.getItem('sessaoUsuario');
+            
+            if (!sessaoStr) {
+                redirecionarParaLogin();
+                return;
+            }
+            
+            try {
+                const sessao = JSON.parse(sessaoStr);
+                
+                if (!sessao.autenticado || sessao.usuario.tipo !== 'motorista') {
+                    redirecionarParaLogin();
+                    return;
+                }
+                
+                // Verificar se a sessão expirou (8 horas)
+                const dataLogin = new Date(sessao.dataLogin);
+                const agora = new Date();
+                const horasDecorridas = (agora - dataLogin) / (1000 * 60 * 60);
+                
+                if (horasDecorridas >= 8) {
+                    localStorage.removeItem('sessaoUsuario');
+                    redirecionarParaLogin();
+                    return;
+                }
+            } catch (erro) {
+                console.error('Erro ao verificar autenticação:', erro);
+                redirecionarParaLogin();
+            }
+        }
+        
+        // Redirecionar para login
+        function redirecionarParaLogin() {
+            window.location.href = 'login.html';
+        }
+        
+        // Carregar dados do motorista
+        function carregarDadosMotorista() {
+            try {
+                const sessaoStr = localStorage.getItem('sessaoUsuario');
+                const sessao = JSON.parse(sessaoStr);
+                const motoristaId = sessao.usuario.id;
+                
+                // Em produção, isso seria uma chamada de API
+                const motorista = MockAPI.getMotoristaById(motoristaId);
+                
+                if (motorista) {
+                    document.getElementById('nome-motorista').textContent = motorista.nome.split(' ')[0]; // Apenas primeiro nome
+                    document.getElementById('motorista-nome').textContent = motorista.nome;
+                    document.getElementById('motorista-documento').textContent = 'CPF: ' + motorista.documento;
+                    
+                    // Atualizar status
+                    const statusEl = document.getElementById('motorista-status');
+                    if (motorista.disponivel) {
+                        statusEl.className = 'status-badge status-disponivel';
+                        statusEl.textContent = 'Disponível';
+                    } else {
+                        statusEl.className = 'status-badge status-indisponivel';
+                        statusEl.textContent = 'Indisponível';
+                    }
+                }
+            } catch (erro) {
+                console.error('Erro ao carregar dados do motorista:', erro);
+            }
+        }
+        
+        // Funções das ações (stubs para demonstração)
+        function abrirVeiculo() {
+            alert('Funcionalidade "Meu Veículo" em desenvolvimento');
+        }
+        
+        function abrirAbastecimento() {
+            window.location.href = 'motorista-abastecimento.html';
+        }
+        
+        function abrirCheckin() {
+            alert('Funcionalidade "Check-in" em desenvolvimento');
+        }
+        
+        function abrirNovaEntrega() {
+            alert('Funcionalidade "Nova Entrega" em desenvolvimento');
+        }
+    </script>
+</body>
+</html> 

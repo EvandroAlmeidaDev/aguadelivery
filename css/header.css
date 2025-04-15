@@ -1,0 +1,76 @@
+/* header.css - Estilos para o cabeçalho e menu de usuário */
+
+/* Estilos para o dropdown do usuário */
+.user-menu {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    width: 180px;
+    display: none;
+    z-index: 1000;
+    margin-top: 5px;
+}
+
+.user-dropdown.active {
+    display: block;
+}
+
+.user-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.user-dropdown ul li {
+    padding: 0;
+}
+
+.user-dropdown ul li a {
+    padding: 12px 16px;
+    display: block;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.user-dropdown ul li a:hover {
+    background-color: #f5f5f5;
+    color: #2196f3;
+}
+
+.user-dropdown ul li a i {
+    margin-right: 8px;
+    width: 16px;
+    text-align: center;
+}
+
+/* Estilo para o avatar */
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+/* Estilo para a área do usuário na barra superior */
+.top-bar .user-menu {
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: background-color 0.2s;
+}
+
+.top-bar .user-menu:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+} 

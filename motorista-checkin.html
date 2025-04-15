@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/LOGO BRANCA.png">
+    <title>Check-in Diário - Água Delivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2196f3;
+            --secondary-color: #0d47a1;
+            --text-color: #333;
+            --background-color: #f5f7fa;
+            --card-color: #fff;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .app-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .app-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            margin-bottom: 60px;
+        }
+        
+        .checkin-card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-group > div {
+            flex: 1;
+        }
+        
+        .camera-preview {
+            width: 100%;
+            height: 200px;
+            background-color: #eee;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .camera-preview video, .camera-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .camera-placeholder {
+            color: #777;
+            text-align: center;
+        }
+        
+        .camera-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: var(--text-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-icon {
+            margin-right: 8px;
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        .actions-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .actions-row .btn {
+            flex: 1;
+        }
+        
+        .vehicle-info {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .vehicle-info h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .vehicle-detail {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .vehicle-detail-label {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .vehicle-detail-value {
+            flex: 2;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #777;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .checklist-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .checklist-check {
+            margin-right: 10px;
+        }
+        
+        .checklist-label {
+            flex: 1;
+        }
+        
+        .location-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .location-info i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="app-title">
+                <button class="back-btn" onclick="window.location.href='motorista-app.html'">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                Check-in Diário
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <div class="checkin-card">
+                <h2 class="section-title">Associação de Veículo</h2>
+                <div class="form-group">
+                    <label for="vehicle-select">Selecione o veículo:</label>
+                    <select id="vehicle-select">
+                        <option value="">-- Selecione um veículo --</option>
+                        <!-- Será preenchido via JavaScript -->
+                    </select>
+                </div>
+                
+                <div id="vehicle-details" class="vehicle-info" style="display: none;">
+                    <h3>Detalhes do Veículo</h3>
+                    <div class="vehicle-detail">
+                        <span class="vehicle-detail-label">Placa:</span>
+                        <span class="vehicle-detail-value" id="vehicle-plate">--</span>
+                    </div>
+                    <div class="vehicle-detail">
+                        <span class="vehicle-detail-label">Modelo:</span>
+                        <span class="vehicle-detail-value" id="vehicle-model">--</span>
+                    </div>
+                    <div class="vehicle-detail">
+                        <span class="vehicle-detail-label">Última manutenção:</span>
+                        <span class="vehicle-detail-value" id="vehicle-last-maintenance">--</span>
+                    </div>
+                    <div class="vehicle-detail">
+                        <span class="vehicle-detail-label">KM atual:</span>
+                        <span class="vehicle-detail-value" id="vehicle-km">--</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="km-reading">KM atual do veículo:</label>
+                    <input type="number" id="km-reading" placeholder="Digite a quilometragem atual">
+                </div>
+            </div>
+            
+            <div class="checkin-card">
+                <h2 class="section-title">Checklist do Veículo</h2>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-lights" class="checklist-check">
+                        <label for="check-lights" class="checklist-label">Luzes funcionando corretamente</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-tires" class="checklist-check">
+                        <label for="check-tires" class="checklist-label">Pneus em bom estado</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-brakes" class="checklist-check">
+                        <label for="check-brakes" class="checklist-label">Freios funcionando corretamente</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-fuel" class="checklist-check">
+                        <label for="check-fuel" class="checklist-label">Nível de combustível adequado</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-water" class="checklist-check">
+                        <label for="check-water" class="checklist-label">Nível de água do radiador adequado</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-oil" class="checklist-check">
+                        <label for="check-oil" class="checklist-label">Nível de óleo adequado</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-documents" class="checklist-check">
+                        <label for="check-documents" class="checklist-label">Documentos em ordem</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="checkin-card">
+                <h2 class="section-title">Foto do Veículo</h2>
+                <div class="camera-preview" id="camera-preview">
+                    <div class="camera-placeholder">
+                        <i class="fas fa-camera camera-icon"></i>
+                        <p>Tire uma foto do veículo</p>
+                    </div>
+                </div>
+                
+                <button id="capture-photo" class="btn btn-primary btn-block">
+                    <i class="fas fa-camera btn-icon"></i> Capturar Foto
+                </button>
+                
+                <div class="location-info" id="location-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Obtendo localização...</span>
+                </div>
+            </div>
+            
+            <div class="actions-row">
+                <button id="btn-cancel" class="btn btn-secondary">
+                    <i class="fas fa-times btn-icon"></i> Cancelar
+                </button>
+                <button id="btn-submit" class="btn btn-success">
+                    <i class="fas fa-check btn-icon"></i> Confirmar Check-in
+                </button>
+            </div>
+        </main>
+        
+        <nav class="bottom-nav">
+            <a href="motorista-app.html" class="nav-item">
+                <i class="fas fa-home nav-icon"></i>
+                <span>Início</span>
+            </a>
+            <a href="motorista-checkin.html" class="nav-item active">
+                <i class="fas fa-clipboard-check nav-icon"></i>
+                <span>Check-in</span>
+            </a>
+            <a href="motorista-abastecimento.html" class="nav-item">
+                <i class="fas fa-gas-pump nav-icon"></i>
+                <span>Abastecer</span>
+            </a>
+            <a href="motorista-entregas.html" class="nav-item">
+                <i class="fas fa-truck nav-icon"></i>
+                <span>Entregas</span>
+            </a>
+        </nav>
+    </div>
+    
+    <script type="module" src="js/supabase-api.js"></script>
+    <script src="js/motorista-checkin.js"></script>
+</body>
+</html> 

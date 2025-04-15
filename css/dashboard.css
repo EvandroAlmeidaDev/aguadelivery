@@ -1,0 +1,40 @@
+/* Notebook/Smaller Desktop Screens */
+@media screen and (min-width: 1025px) and (max-width: 1366px) {
+    .summary-cards {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .summary-card {
+        padding: var(--spacing-md);
+    }
+    
+    .summary-card-content {
+        gap: var(--spacing-md);
+    }
+    
+    .summary-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.2rem;
+    }
+    
+    .summary-info h3 {
+        font-size: var(--font-size-sm);
+        margin-bottom: 4px;
+    }
+    
+    .summary-info p {
+        font-size: var(--font-size-lg);
+    }
+    
+    .chart-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .metric-cards {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-sm);
+    }
+} 
